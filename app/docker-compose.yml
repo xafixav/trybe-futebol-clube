@@ -2,6 +2,7 @@ version: '3.9'
 services:
   frontend:
     build: ./frontend
+    container_name: app_frontend
     # ...
     depends_on:
       backend:
@@ -14,6 +15,7 @@ services:
       retries: 5
   backend:
     build: ./backend
+    container_name: app_backend
     # ...
     depends_on:
       db:

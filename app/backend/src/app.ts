@@ -1,13 +1,12 @@
 import * as express from 'express';
 
 class App {
-  public app: express.Express;
+  public app: express.Express = express();
   // ...
 
   constructor() {
     // ...
     this.config();
-    // ...
   }
 
   private config():void {
@@ -19,12 +18,14 @@ class App {
     };
 
     this.app.use(accessControl);
+    this.app.use(express.json());
+    this.app.post('/login');
     // ...
   }
 
   // ...
   public start(PORT: string | number):void {
-    // ...
+    this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));    
   }
 }
 
