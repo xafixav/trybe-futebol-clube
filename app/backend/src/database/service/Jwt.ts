@@ -1,13 +1,16 @@
-import { Jwt }, { SignOptions } from 'jsonwebtoken';
+import * as Jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 import * as fs from 'fs';
 import ILogin from '../interfaces/ILogin';
 
 export default class JwtService {
-  private jwtSecret: string
-  private jwtSignConfig: SignOptions
+  private jwtSecret: string;
+
+  private jwtSignConfig: SignOptions;
+
   constructor() {
     this.jwtSecret = fs.readFileSync('./app/backend/jwt.evaluation.key', { encoding: 'utf-8' });
-    this.jwtSignConfig = {algorithm: 'RS256', expiresIn: '24h'}
+    this.jwtSignConfig = { algorithm: 'RS256', expiresIn: '24h' };
   }
 
   public generateToken(data: ILogin) {
@@ -16,13 +19,13 @@ export default class JwtService {
 
   public validateToken(token: string) {
     try {
-     return Jwt.verify(token, this.jwtSecret)
+      return Jwt.verify(token, this.jwtSecret);
     } catch (e) {
       return e;
     }
   }
 
-  public decodeToken(token: string) {
+  public static decodeToken(token: string) {
     return Jwt.decode(token);
   }
 }

@@ -1,12 +1,16 @@
 import * as express from 'express';
+import LoginController from './database/controller/Login';
 
 class App {
   public app: express.Express = express();
+
+  private LoginController: LoginController;
   // ...
 
   constructor() {
     // ...
     this.config();
+    this.LoginController = new LoginController();
   }
 
   private config():void {
@@ -19,13 +23,13 @@ class App {
 
     this.app.use(accessControl);
     this.app.use(express.json());
-    this.app.post('/login');
+    this.app.post('/login', this.LoginController.login);
     // ...
   }
 
   // ...
   public start(PORT: string | number):void {
-    this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));    
+    this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));
   }
 }
 
