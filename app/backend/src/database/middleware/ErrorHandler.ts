@@ -5,6 +5,6 @@ export default class ErrorHandler {
     const status = err.status || 500;
 
     console.log(err);
-    return res.status(status).json({ error: err.message });
+    return res.status(status).json({ message: err.message });
   };
 }

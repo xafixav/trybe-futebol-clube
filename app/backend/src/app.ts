@@ -1,10 +1,13 @@
 import * as express from 'express';
 import LoginController from './database/controller/Login';
+import ErrorHandler from './database/middleware/ErrorHandler';
 
 class App {
   public app: express.Express = express();
 
   private LoginController: LoginController;
+
+  private Error: ErrorHandler;
   // ...
 
   constructor() {
@@ -23,13 +26,14 @@ class App {
 
     this.app.use(accessControl);
     this.app.use(express.json());
-    this.app.post('/login', this.LoginController.login);
     // ...
   }
 
   // ...
   public start(PORT: string | number):void {
     this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));
+    this.app.post('/login', this.LoginController.login);
+    this.app.use(ErrorHandler.ErrorReport);
   }
 }
 

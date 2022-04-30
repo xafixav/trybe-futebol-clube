@@ -9,7 +9,7 @@ export default class JwtService {
   private jwtSignConfig: SignOptions;
 
   constructor() {
-    this.jwtSecret = fs.readFileSync('./app/backend/jwt.evaluation.key', { encoding: 'utf-8' });
+    this.jwtSecret = fs.readFileSync('./jwt.evaluation.key', { encoding: 'utf-8' });
     this.jwtSignConfig = { algorithm: 'RS256', expiresIn: '24h' };
   }
 

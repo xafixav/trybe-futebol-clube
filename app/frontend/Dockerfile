@@ -3,6 +3,6 @@ WORKDIR /app/frotnend
 COPY package*.json ./
 RUN npm install
 COPY . ./
-CMD ["NPM", "install"]
+CMD ["npm", "start"]
 
 #  ...

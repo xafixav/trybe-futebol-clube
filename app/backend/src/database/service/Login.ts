@@ -1,3 +1,4 @@
+import * as bcryptjs from 'bcryptjs'
 import Users from '../models/Users';
 import ILoginResponse from '../interfaces/ILoginResponse';
 import ILogin from '../interfaces/ILogin';
@@ -10,15 +11,21 @@ export default class LoginService {
     this.jwt = new JwtService();
   }
 
-  public async findUser(data: ILogin): Promise<ILoginResponse | void> {
+  public async findUser(data: ILogin): Promise<ILoginResponse> {
     const { email, password } = data;
-    const user = await Users.findOne({ where: { email, password }, attributes: ['password'] });
-    if (user) {
-      const token = this.jwt.generateToken(data);
-      return {
-        user,
-        token,
-      };
+    const user: any = await Users.findOne({ where: { email }});
+    const validUser = bcryptjs.compareSync(user.password, password);
+
+    if (!validUser || !user) {
+      throw { status: 401, message: 'Incorrect email or password' }
     }
+
+    delete user.password;
+
+    const token = this.jwt.generateToken(data);
+    return {
+      user,
+      token,
+    };
   }
 }

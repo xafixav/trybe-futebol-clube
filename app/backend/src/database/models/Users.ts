@@ -10,6 +10,7 @@ Users.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,
+    primaryKey: true,
   },
   username: {
     type: DataTypes.STRING,
