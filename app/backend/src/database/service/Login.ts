@@ -1,8 +1,9 @@
-import * as bcryptjs from 'bcryptjs'
+import * as bcryptjs from 'bcryptjs';
 import Users from '../models/Users';
 import ILoginResponse from '../interfaces/ILoginResponse';
 import ILogin from '../interfaces/ILogin';
 import JwtService from './Jwt';
+import ErrorExtension from '../ErrorExtension';
 
 export default class LoginService {
   jwt: JwtService;
@@ -11,21 +12,32 @@ export default class LoginService {
     this.jwt = new JwtService();
   }
 
-  public async findUser(data: ILogin): Promise<ILoginResponse> {
+  public findUser = async (data: ILogin): Promise<ILoginResponse> => {
     const { email, password } = data;
-    const user: any = await Users.findOne({ where: { email }});
-    const validUser = bcryptjs.compareSync(user.password, password);
+    const userPayload: any = await Users.findOne({ where: { email } });
 
-    if (!validUser || !user) {
-      throw { status: 401, message: 'Incorrect email or password' }
+    if (!userPayload) {
+      throw new ErrorExtension({ status: 400, message: 'Incorrect email or password' });
     }
 
-    delete user.password;
+    const validUser = bcryptjs.compareSync(password, userPayload.password);
+
+    if (!validUser) {
+      throw new ErrorExtension({ status: 400, message: 'Incorrect email or password' });
+    }
 
     const token = this.jwt.generateToken(data);
+
+    const userResponse = {
+      id: userPayload.id,
+      username: userPayload.username,
+      role: userPayload.role,
+      email
+    }
+
     return {
-      user,
+      user: userResponse,
       token,
     };
-  }
+  };
 }

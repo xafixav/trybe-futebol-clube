@@ -7,6 +7,7 @@ const loginSchema = Joi.object({
     .messages({
       'any.required': '401|All fields must be filled',
       'any.invalid': '401|Incorrect email or password',
+      'string.email': '401|Incorrect email or password',
     }),
   password: Joi.string().min(6).required().messages({
     'any.required': '400|All fields must be filled',

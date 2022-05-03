@@ -1,11 +1,14 @@
 import * as express from 'express';
 import LoginController from './database/controller/Login';
 import ErrorHandler from './database/middleware/ErrorHandler';
+import LoginMiddleware from './database/middleware/Login';
 
 class App {
   public app: express.Express = express();
 
   private LoginController: LoginController;
+
+  private LoginMiddelware: LoginMiddleware;
 
   private Error: ErrorHandler;
   // ...
@@ -14,6 +17,7 @@ class App {
     // ...
     this.config();
     this.LoginController = new LoginController();
+    this.LoginMiddelware = new LoginMiddleware();
   }
 
   private config():void {
@@ -32,7 +36,7 @@ class App {
   // ...
   public start(PORT: string | number):void {
     this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));
-    this.app.post('/login', this.LoginController.login);
+    this.app.post('/login', this.LoginMiddelware.loginIsValid, this.LoginController.login);
     this.app.use(ErrorHandler.ErrorReport);
   }
 }

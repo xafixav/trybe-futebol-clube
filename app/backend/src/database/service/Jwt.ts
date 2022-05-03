@@ -10,7 +10,7 @@ export default class JwtService {
 
   constructor() {
     this.jwtSecret = fs.readFileSync('./jwt.evaluation.key', { encoding: 'utf-8' });
-    this.jwtSignConfig = { algorithm: 'RS256', expiresIn: '24h' };
+    this.jwtSignConfig = { expiresIn: '24h' };
   }
 
   public generateToken(data: ILogin) {

@@ -1,6 +1,6 @@
-import Users from '../models/Users';
+import IUser from "./IUser";
 
 export default interface ILoginResponse {
-  user: Users,
+  user: IUser,
   token: string,
 }
