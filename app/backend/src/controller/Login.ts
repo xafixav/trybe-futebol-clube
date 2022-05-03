@@ -17,7 +17,6 @@ export default class LoginController {
       if (loginResponse) {
         return res.status(StatusCodes.OK).json(loginResponse);
       }
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Incorrect email or password' });
     } catch (e) {
       next(e);
     }

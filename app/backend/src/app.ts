@@ -1,7 +1,7 @@
 import * as express from 'express';
-import LoginController from './database/controller/Login';
-import ErrorHandler from './database/middleware/ErrorHandler';
-import LoginMiddleware from './database/middleware/Login';
+import LoginController from './controller/Login';
+import ErrorHandler from './middleware/ErrorHandler';
+import LoginMiddleware from './middleware/Login';
 
 class App {
   public app: express.Express = express();
@@ -33,15 +33,23 @@ class App {
     // ...
   }
 
+  public apiMethods() {
+    this.app.post('/login', this.LoginMiddelware.loginIsValid, this.LoginController.login);
+    this.app.use(ErrorHandler.ErrorReport);
+  }
+
   // ...
   public start(PORT: string | number):void {
     this.app.listen(Number(PORT), () => console.log(`Servidor ouvindo na PORTA: ${PORT}`));
-    this.app.post('/login', this.LoginMiddelware.loginIsValid, this.LoginController.login);
-    this.app.use(ErrorHandler.ErrorReport);
+    this.apiMethods();
   }
 }
 
 export { App };
 
 // A execução dos testes de cobertura depende dessa exportação
-export const { app } = new App();
+const testClass = new App();
+
+testClass.apiMethods();
+
+export const { app } = testClass;

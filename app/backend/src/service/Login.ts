@@ -1,5 +1,5 @@
 import * as bcryptjs from 'bcryptjs';
-import Users from '../models/Users';
+import Users from '../database/models/Users';
 import ILoginResponse from '../interfaces/ILoginResponse';
 import ILogin from '../interfaces/ILogin';
 import JwtService from './Jwt';
@@ -19,25 +19,27 @@ export default class LoginService {
     if (!userPayload) {
       throw new ErrorExtension({ status: 400, message: 'Incorrect email or password' });
     }
-
-    const validUser = bcryptjs.compareSync(password, userPayload.password);
-
-    if (!validUser) {
-      throw new ErrorExtension({ status: 400, message: 'Incorrect email or password' });
-    }
-
-    const token = this.jwt.generateToken(data);
+    this.validateUser(userPayload, password);
 
     const userResponse = {
       id: userPayload.id,
       username: userPayload.username,
       role: userPayload.role,
-      email
-    }
+      email,
+    };
 
     return {
       user: userResponse,
-      token,
+      token: this.jwt.generateToken(data),
     };
+  };
+
+  private validateUser = (payload: ILogin, password: string): boolean => {
+    const validUser = bcryptjs.compareSync(password, payload.password);
+
+    if (!validUser) {
+      throw new ErrorExtension({ status: 400, message: 'Incorrect email or password' });
+    }
+    return validUser;
   };
 }
