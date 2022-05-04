@@ -17,12 +17,8 @@ export default class JwtService {
     return Jwt.sign(data, this.jwtSecret, this.jwtSignConfig);
   }
 
-  public validateToken(token: string) {
-    try {
-      return Jwt.verify(token, this.jwtSecret);
-    } catch (e) {
-      return e;
-    }
+  public validateToken(token: string): Jwt.JwtPayload | string {
+    return Jwt.verify(token, this.jwtSecret);
   }
 
   public static decodeToken(token: string) {
