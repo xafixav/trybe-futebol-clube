@@ -3,6 +3,7 @@ import LoginController from './controller/Login';
 import ErrorHandler from './middleware/ErrorHandler';
 import LoginMiddleware from './middleware/Login';
 import LoginRoutes from './Routes/Login';
+import TeamsRoutes from './Routes/Teams';
 
 class App {
   public app: express.Express = express();
@@ -14,12 +15,15 @@ class App {
   private Error: ErrorHandler;
 
   private LoginRoutes: express.Router;
+
+  private TeamRoutes: express.Router;
   // ...
 
   constructor() {
     // ...
     this.config();
     this.LoginRoutes = LoginRoutes;
+    this.TeamRoutes = TeamsRoutes;
   }
 
   private config():void {
@@ -36,8 +40,8 @@ class App {
   }
 
   public apiMethods() {
-    this.app.post('/login', LoginRoutes);
-    this.app.get('/login/validate', LoginRoutes);
+    this.app.use(LoginRoutes);
+    this.app.use(TeamsRoutes);
     this.app.use(ErrorHandler.ErrorReport);
   }
 
