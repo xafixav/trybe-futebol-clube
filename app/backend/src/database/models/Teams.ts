@@ -1,9 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '.';
-import Matches from './Matches';
 // import OtherModel from './OtherModel';
 
 class Teams extends Model {
+  public id: number;
+
+  public teamName: string;
 }
 
 Teams.init({
@@ -11,8 +13,9 @@ Teams.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,
+    primaryKey: true,
   },
-  home_team: {
+  team_name: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
@@ -20,12 +23,9 @@ Teams.init({
 }, {
   underscored: true,
   sequelize: db,
-  modelName: 'teams',
+  tableName: 'teams',
   timestamps: false,
 });
-
-Matches.belongsTo(Teams, { foreignKey: 'home_team', as: 'homeTeam' });
-Matches.belongsTo(Teams, { foreignKey: 'away_team', as: 'awayTeam' });
 
 /**
   * `Workaround` para aplicar as associations em TS:
