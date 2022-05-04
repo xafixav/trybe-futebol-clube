@@ -21,4 +21,18 @@ export default class LoginController {
       next(e);
     }
   };
+
+  public getRole = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { authorization } = req.headers;
+      if (!authorization) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Token not exist' });
+      }
+      const UserRole = await this.loginService.getUserRole(authorization);
+
+      return res.status(StatusCodes.OK).json(UserRole);
+    } catch (e) {
+      next(e);
+    }
+  };
 }
