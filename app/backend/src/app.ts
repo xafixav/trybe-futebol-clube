@@ -2,6 +2,7 @@ import * as express from 'express';
 import LoginController from './controller/Login';
 import ErrorHandler from './middleware/ErrorHandler';
 import LoginMiddleware from './middleware/Login';
+import LoginRoutes from './Routes/Login';
 
 class App {
   public app: express.Express = express();
@@ -11,13 +12,14 @@ class App {
   private LoginMiddelware: LoginMiddleware;
 
   private Error: ErrorHandler;
+
+  private LoginRoutes: express.Router;
   // ...
 
   constructor() {
     // ...
     this.config();
-    this.LoginController = new LoginController();
-    this.LoginMiddelware = new LoginMiddleware();
+    this.LoginRoutes = LoginRoutes;
   }
 
   private config():void {
@@ -34,7 +36,8 @@ class App {
   }
 
   public apiMethods() {
-    this.app.post('/login', this.LoginMiddelware.loginIsValid, this.LoginController.login);
+    this.app.post('/login', LoginRoutes);
+    this.app.get('/login/validate', LoginRoutes);
     this.app.use(ErrorHandler.ErrorReport);
   }
 
