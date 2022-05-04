@@ -2,7 +2,7 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import Users from '../database/models/Users';
-import { adminCorrect } from './Responses/adminCorrect';
+import { adminCorrect, adminToken, TokenInvalid, TokenInvalidSignature, TokenMalformed } from './Mocks/login';
 
 import { app } from '../app';
 
@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('When the model find the user', () => {
+describe('Test the sucess cases for post method /login', () => {
  
 // Exemplo do uso de stubs com tipos
 
@@ -107,7 +107,7 @@ describe('When the model find the user', () => {
   });
 });
 
-describe('When the model does not find the user', () => {
+describe('Test the failure cases for post method /login', () => {
  
   // Exemplo do uso de stubs com tipos
   
@@ -136,3 +136,85 @@ describe('When the model does not find the user', () => {
         expect(chaiHttpResponse.body?.message).to.deep.equal('Incorrect email or password')
     });
   });
+
+  describe('Test the sucess cases for get method /login/validate', () => {
+ 
+    // Exemplo do uso de stubs com tipos
+    
+      let chaiHttpResponse: Response;
+    
+      before(async () => {
+        sinon
+          .stub(Users, "findOne")
+          .resolves(adminCorrect as Users);
+      });
+    
+      after(()=>{
+        (Users.findOne as sinon.SinonStub).restore();
+      })
+    
+      it('When get request has the correct token in Authorization Headers, respond with the correct User role', async () => {
+        chaiHttpResponse = await chai
+        .request(app)
+        .get('/login/validate')
+        .set('Authorization', adminToken);
+
+          expect(chaiHttpResponse).to.have.status(200)
+          expect(chaiHttpResponse.body).to.deep.equal('admin')
+      });
+
+    });
+
+    describe('Test the failuer cases for get method /login/validate', () => {
+ 
+      // Exemplo do uso de stubs com tipos
+      
+        let chaiHttpResponse: Response;
+      
+        before(async () => {
+          sinon
+            .stub(Users, "findOne")
+            .resolves(adminCorrect as Users);
+        });
+      
+        after(()=>{
+          (Users.findOne as sinon.SinonStub).restore();
+        })
+      
+        it('When get request has a Invalid Token in Authorization Headers, respond with ', async () => {
+          chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+          .set('Authorization', TokenMalformed);
+  
+            expect(chaiHttpResponse).to.have.status(400)
+            expect(chaiHttpResponse.body).to.deep.equal({
+              message: "jwt malformed"
+            })
+        });
+
+        it('When get request has a Invalid Token in Authorization Headers, respond with ', async () => {
+          chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+          .set('Authorization', TokenInvalid);
+  
+            expect(chaiHttpResponse).to.have.status(400)
+            expect(chaiHttpResponse.body).to.deep.equal({
+              "message": "invalid token"
+            })
+        });
+
+        it('When get request has a Invalid Token in Authorization Headers, respond with ', async () => {
+          chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+          .set('Authorization', TokenInvalidSignature);
+  
+            expect(chaiHttpResponse).to.have.status(400)
+            expect(chaiHttpResponse.body).to.deep.equal({
+              "message": "invalid signature"
+            })
+        });
+  
+      });
