@@ -24,11 +24,11 @@ Teams.init({
   timestamps: false,
 });
 
-Matches.belongsTo(Teams, { foreignKey: 'home_team', as: 'homeTeam'});
-Matches.belongsTo(Teams, { foreignKey: 'away_team', as: 'awayTeam'});
+Matches.belongsTo(Teams, { foreignKey: 'home_team', as: 'homeTeam' });
+Matches.belongsTo(Teams, { foreignKey: 'away_team', as: 'awayTeam' });
 
 /**
-  * `Workaround` para aplicar as associations em TS: 
+  * `Workaround` para aplicar as associations em TS:
   * Associations 1:N devem ficar em uma das instâncias de modelo
   * */
 
