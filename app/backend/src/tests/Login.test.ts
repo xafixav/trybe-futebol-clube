@@ -216,5 +216,16 @@ describe('Test the failure cases for post method /login', () => {
               "message": "invalid signature"
             })
         });
+
+        it('When get request has a Invalid Token in Authorization Headers, respond with ', async () => {
+          chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+  
+            expect(chaiHttpResponse).to.have.status(400)
+            expect(chaiHttpResponse.body).to.deep.equal({
+               message: 'Token not exist' 
+              })
+        });
   
       });
