@@ -1,29 +1,25 @@
 import * as express from 'express';
-import LoginController from './controller/Login';
 import ErrorHandler from './middleware/ErrorHandler';
-import LoginMiddleware from './middleware/Login';
-import LoginRoutes from './Routes/Login';
-import TeamsRoutes from './Routes/Teams';
+import LoginRouter from './Routes/Login';
+import TeamsRouter from './Routes/Teams';
+import MatchesRouter from './Routes/Matches';
 
 class App {
   public app: express.Express = express();
 
-  private LoginController: LoginController;
-
-  private LoginMiddelware: LoginMiddleware;
-
-  private Error: ErrorHandler;
-
   private LoginRoutes: express.Router;
 
-  private TeamRoutes: express.Router;
+  private TeamsRoutes: express.Router;
+
+  private MatchesRoutes: express.Router;
   // ...
 
   constructor() {
     // ...
     this.config();
-    this.LoginRoutes = LoginRoutes;
-    this.TeamRoutes = TeamsRoutes;
+    this.LoginRoutes = LoginRouter;
+    this.TeamsRoutes = TeamsRouter;
+    this.MatchesRoutes = MatchesRouter;
   }
 
   private config():void {
@@ -40,8 +36,10 @@ class App {
   }
 
   public apiMethods() {
+    const { LoginRoutes, TeamsRoutes, MatchesRoutes } = this;
     this.app.use(LoginRoutes);
     this.app.use(TeamsRoutes);
+    this.app.use(MatchesRoutes);
     this.app.use(ErrorHandler.ErrorReport);
   }
 
