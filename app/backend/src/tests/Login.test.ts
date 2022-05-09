@@ -156,8 +156,16 @@ describe('Test the failure cases for post method /login', () => {
       it('When get request has the correct token in Authorization Headers, respond with the correct User role', async () => {
         chaiHttpResponse = await chai
         .request(app)
-        .get('/login/validate')
-        .set('Authorization', adminToken);
+        .post('/login')
+        .send({
+         email: "admin@admin.com",
+           password: "secret_admin"
+         }).then((res: any) => {
+           return chai
+           .request(app)
+           .get('/login/validate')
+           .set('Authorization', res.body.token);
+         });
 
           expect(chaiHttpResponse).to.have.status(200)
           expect(chaiHttpResponse.body).to.deep.equal('admin')
