@@ -2,15 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import ErrorExtension from '../utility/ErrorExtension';
 import ITeam from '../interfaces/ITeam';
 import Teams from '../database/models/Teams';
-import JwtService from './Jwt';
 
-export default class TeamsController {
-  jwt: JwtService;
-
-  constructor() {
-    this.jwt = new JwtService();
-  }
-
+export default class TeamsService {
   public findOne = async (id: number): Promise<ITeam> => {
     const Team = await Teams.findOne({ where: { id },
       raw: true,
