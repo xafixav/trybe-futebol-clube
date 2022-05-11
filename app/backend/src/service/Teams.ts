@@ -10,7 +10,8 @@ export default class TeamsService {
       attributes: ['id', ['team_name', 'teamName']] });
 
     if (!Team) {
-      throw new ErrorExtension({ status: StatusCodes.BAD_REQUEST, message: 'Team not found' });
+      throw new ErrorExtension({ status: StatusCodes.NOT_FOUND,
+        message: 'There is no team with such id!' });
     }
 
     return Team;
