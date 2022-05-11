@@ -14,7 +14,8 @@ module.exports = {
           key: 'id'          
         },
         onUpdate: 'cascade',
-        onDelete: 'cascade'
+        onDelete: 'cascade',
+        field: 'home_team'
       },
       home_team_goals: {
         type: Sequelize.INTEGER,
@@ -26,13 +27,14 @@ module.exports = {
           key: 'id'          
         },
         onUpdate: 'cascade',
-        onDelete: 'cascade'
+        onDelete: 'cascade',
+        field: 'away_team',
       },
       away_team_goals: {
         type: Sequelize.INTEGER,
       },
       in_progress: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BOOLEAN,
       },
     });
   },
