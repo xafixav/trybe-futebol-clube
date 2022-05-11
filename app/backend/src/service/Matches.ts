@@ -1,10 +1,19 @@
 import { StatusCodes } from 'http-status-codes';
+import INewMatch from '../interfaces/INewMatch';
 import ErrorExtension from '../utility/ErrorExtension';
+import TeamService from './Teams';
 import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
+import IUpdateMatch from '../interfaces/IUpdateMatch';
 
 export default class MatchesService {
   private static noMatchFoundMessage = 'No match has been found';
+
+  private teams: TeamService;
+
+  constructor() {
+    this.teams = new TeamService();
+  }
 
   public findAll = async () => {
     const allMatches = await this.findMatchAll();
@@ -15,6 +24,63 @@ export default class MatchesService {
     }
 
     return allMatches;
+  };
+
+  public findOne = async (id: number) => {
+    const matchById = Matches.findOne({ where: { id } });
+    if (!matchById) {
+      throw new ErrorExtension({ status: StatusCodes.UNAUTHORIZED,
+        message: MatchesService.noMatchFoundMessage });
+    }
+
+    return matchById;
+  };
+
+  private validateTeams = async (data: INewMatch) => {
+    const { awayTeam, homeTeam } = data;
+    if (data.awayTeam === data.homeTeam) {
+      throw new ErrorExtension({ status: StatusCodes.UNAUTHORIZED,
+        message: 'It is not possible to create a match with two equal teams' });
+    }
+    await this.teams.findOne(homeTeam);
+    await this.teams.findOne(awayTeam);
+  };
+
+  public createMatch = async (data: INewMatch) => {
+    await this.validateTeams(data);
+    const createdMatch = await Matches.create(data);
+
+    return createdMatch;
+  };
+
+  public endMatch = async (id: number) => {
+    const MatchToEnd = Matches.findOne({ where: { id } });
+    if (!MatchToEnd) {
+      throw new ErrorExtension({ status: StatusCodes.UNAUTHORIZED,
+        message: MatchesService.noMatchFoundMessage });
+    }
+    const MatchEnded = await Matches.update({
+      inProgress: false,
+    }, {
+      where: { id },
+    });
+    return MatchEnded;
+  };
+
+  public updateMatch = async (data: IUpdateMatch) => {
+    const { id, homeTeamGoals, awayTeamGoals } = data;
+    const matchSelected = Matches.findOne({ where: { id } });
+    if (!matchSelected) {
+      throw new ErrorExtension({ status: StatusCodes.UNAUTHORIZED,
+        message: MatchesService.noMatchFoundMessage });
+    }
+    const MatchEnded = await Matches.update({
+      homeTeamGoals,
+      awayTeamGoals,
+    }, {
+      where: { id },
+    });
+    return MatchEnded;
   };
 
   public findByQuery = async (query: string) => {
