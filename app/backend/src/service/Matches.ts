@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes';
-import IMatches from '../interfaces/IMatches';
 import ErrorExtension from '../utility/ErrorExtension';
 import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
@@ -8,7 +7,7 @@ export default class MatchesService {
   private static noMatchFoundMessage = 'No match has been found';
 
   public findAll = async () => {
-    const allMatches = this.inProgressToBoolean(await this.findMatchAll());
+    const allMatches = await this.findMatchAll();
 
     if (!allMatches) {
       throw new ErrorExtension({ status: StatusCodes.BAD_REQUEST,
@@ -20,7 +19,7 @@ export default class MatchesService {
 
   public findByQuery = async (query: string) => {
     if (query === 'true') {
-      const matchesInProgress = this.inProgressToBoolean(await this.findInProgressTrue());
+      const matchesInProgress = await this.findInProgressTrue();
       if (!matchesInProgress) {
         throw new ErrorExtension({ status: StatusCodes.BAD_REQUEST,
           message: MatchesService.noMatchFoundMessage });
@@ -28,7 +27,7 @@ export default class MatchesService {
       return matchesInProgress;
     }
     if (query === 'false') {
-      const matchesNotInProgress = this.inProgressToBoolean(await this.findInProgressFalse());
+      const matchesNotInProgress = await this.findInProgressFalse();
       if (!matchesNotInProgress) {
         throw new ErrorExtension({ status: StatusCodes.BAD_REQUEST,
           message: MatchesService.noMatchFoundMessage });
@@ -41,18 +40,12 @@ export default class MatchesService {
     include: [{
       model: Teams,
       as: 'teamHome',
-      attributes: [['team_name', 'teamName']],
+      attributes: ['teamName'],
     }, {
       model: Teams,
       as: 'teamAway',
-      attributes: [['team_name', 'teamName']],
+      attributes: ['teamName'],
     }],
-    attributes: ['id',
-      ['home_team', 'homeTeam'],
-      ['home_team_goals', 'homeTeamGoals'],
-      ['away_team', 'awayTeam'],
-      ['away_team_goals', 'awayTeamGoals'],
-      ['in_progress', 'inProgress']],
     where: { in_progress: 1 },
   });
 
@@ -66,12 +59,6 @@ export default class MatchesService {
       as: 'teamAway',
       attributes: [['team_name', 'teamName']],
     }],
-    attributes: ['id',
-      ['home_team', 'homeTeam'],
-      ['home_team_goals', 'homeTeamGoals'],
-      ['away_team', 'awayTeam'],
-      ['away_team_goals', 'awayTeamGoals'],
-      ['in_progress', 'inProgress']],
     where: { in_progress: 0 },
   });
 
@@ -79,34 +66,11 @@ export default class MatchesService {
     include: [{
       model: Teams,
       as: 'teamHome',
-      attributes: [['team_name', 'teamName']],
+      attributes: ['teamName'],
     }, {
       model: Teams,
       as: 'teamAway',
-      attributes: [['team_name', 'teamName']],
+      attributes: ['teamName'],
     }],
-    attributes: ['id',
-      ['home_team', 'homeTeam'],
-      ['home_team_goals', 'homeTeamGoals'],
-      ['away_team', 'awayTeam'],
-      ['away_team_goals', 'awayTeamGoals'],
-      ['in_progress', 'inProgress']],
   });
-
-  private inProgressToBoolean = (allMatches: IMatches[]) => {
-    if (allMatches) {
-      if (allMatches[0]?.dataValues) {
-        return allMatches.map(({ dataValues }: any) => {
-          let newEl;
-          if (dataValues.inProgress === 1) {
-            newEl = { ...dataValues, inProgress: true };
-          } else {
-            newEl = { ...dataValues, inProgress: false };
-          }
-          return newEl;
-        });
-      }
-      return allMatches;
-    }
-  };
 }
