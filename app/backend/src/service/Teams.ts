@@ -18,7 +18,7 @@ export default class TeamsService {
   };
 
   public findAll = async () => {
-    const allTeams = await Teams.findAll({ raw: true });
+    const allTeams = await Teams.findAll();
 
     if (!allTeams) {
       throw new ErrorExtension({ status: StatusCodes.BAD_REQUEST, message: 'Team not found' });
