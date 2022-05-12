@@ -3,6 +3,7 @@ import ErrorHandler from './middleware/ErrorHandler';
 import LoginRouter from './Routes/Login';
 import TeamsRouter from './Routes/Teams';
 import MatchesRouter from './Routes/Matches';
+import LeaderBoardRouter from './Routes/LeaderBoard';
 
 class App {
   public app: express.Express = express();
@@ -12,6 +13,8 @@ class App {
   private TeamsRoutes: express.Router;
 
   private MatchesRoutes: express.Router;
+
+  private LeaderBoardRoutes: express.Router;
   // ...
 
   constructor() {
@@ -20,6 +23,7 @@ class App {
     this.LoginRoutes = LoginRouter;
     this.TeamsRoutes = TeamsRouter;
     this.MatchesRoutes = MatchesRouter;
+    this.LeaderBoardRoutes = LeaderBoardRouter;
   }
 
   private config():void {
@@ -36,10 +40,11 @@ class App {
   }
 
   public apiMethods() {
-    const { LoginRoutes, TeamsRoutes, MatchesRoutes } = this;
+    const { LoginRoutes, TeamsRoutes, MatchesRoutes, LeaderBoardRoutes } = this;
     this.app.use(LoginRoutes);
     this.app.use(TeamsRoutes);
     this.app.use(MatchesRoutes);
+    this.app.use(LeaderBoardRoutes);
     this.app.use(ErrorHandler.ErrorReport);
   }
 

@@ -5,7 +5,7 @@ export default interface IMatches {
   'homeTeamGoals': number,
   'awayTeam': number,
   'awayTeamGoals': number,
-  'inProgress': number,
+  'inProgress': boolean,
   'teamHome': {
     'teamName': string
   },
