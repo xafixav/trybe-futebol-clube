@@ -1,5 +1,5 @@
 interface ILeaderboard {
-  effiency: number;
+  efficiency: number;
   goalsFavor: number;
   goalsOwn: number;
   goalsBalance: number;

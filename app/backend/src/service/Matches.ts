@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+import { Op } from 'sequelize';
 import INewMatch from '../interfaces/INewMatch';
 import ErrorExtension from '../utility/ErrorExtension';
 import TeamService from './Teams';
@@ -71,6 +72,17 @@ export default class MatchesService {
       where: { id },
     });
     return MatchEnded;
+  };
+
+  public findTeamMatchesById = async (id: number) => {
+    const matchesFromThisTeam = await Matches.findAll({
+      where: {
+        in_progress: false,
+        [Op.or]: [{ home_team: id }, { away_team: id }],
+      },
+    });
+
+    return matchesFromThisTeam;
   };
 
   public findByQuery = async (query: string) => {

@@ -29,4 +29,10 @@ router
     MatchController.updateMatch,
   );
 
+router
+  .route('/matches/:id/')
+  .get(
+    MatchController.findTeamMatches,
+  );
+
 export default router;
