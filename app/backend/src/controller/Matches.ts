@@ -60,4 +60,14 @@ export default class MatchesController {
       next(e);
     }
   };
+
+  public findTeamMatches = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const matchEnded = await this.MatchesService.findTeamMatchesById(+id);
+      return res.status(StatusCodes.OK).json(matchEnded);
+    } catch (e) {
+      next(e);
+    }
+  };
 }
