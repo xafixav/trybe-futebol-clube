@@ -26,16 +26,6 @@ export default class MatchesService {
     return allMatches;
   };
 
-  public findOne = async (id: number) => {
-    const matchById = Matches.findOne({ where: { id } });
-    if (!matchById) {
-      throw new ErrorExtension({ status: StatusCodes.UNAUTHORIZED,
-        message: MatchesService.noMatchFoundMessage });
-    }
-
-    return matchById;
-  };
-
   private validateTeams = async (data: INewMatch) => {
     const { awayTeam, homeTeam } = data;
     if (data.awayTeam === data.homeTeam) {
