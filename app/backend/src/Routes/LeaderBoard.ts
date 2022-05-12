@@ -11,4 +11,10 @@ router
     leaderBoard.generateLeaderboard,
   );
 
+router
+  .route('/leaderboard')
+  .get(
+    leaderBoard.generateLeaderboard,
+  );
+
 export default router;
