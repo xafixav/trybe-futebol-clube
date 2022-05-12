@@ -2,7 +2,8 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import Matches from '../database/models/Matches';
-import { matchesByQuery, matchesByQueryCorrect, allTeamsMock, allTeamsMockCorrect, queryTeamsMockFalseCorrect, queryTeamsMockFalse } from './Mocks/matches';
+import { matchesByQueryCorrect, allTeamsMockCorrect, queryTeamsMockFalseCorrect,
+   matchesCreatedResponse, matchFinishedResponse, matchRequest, matchRequestInvalidTeam, matchRequestSameTeam, matchUpdateGoals, matchPatchById, matchUpdateRequest, matchUpdateResponseCorrect } from './Mocks/matches';
 
 import { app } from '../app';
 
@@ -19,7 +20,7 @@ describe('Test the sucess cases for get method /matches', () => {
   before(async () => {
     sinon
       .stub(Matches, "findAll")
-      .resolves(allTeamsMock as any);
+      .resolves(allTeamsMockCorrect as any);
   });
 
   after(()=>{
@@ -48,7 +49,7 @@ describe('Test the sucess cases for get method /matches?inProgress=true', () => 
     before(async () => {
       sinon
         .stub(Matches, "findAll")
-        .resolves(matchesByQuery as any);
+        .resolves(matchesByQueryCorrect as any);
     });
   
     after(()=>{
@@ -77,7 +78,7 @@ describe('Test the sucess cases for get method /matches?inProgress=true', () => 
       before(async () => {
         sinon
           .stub(Matches, "findAll")
-          .resolves(queryTeamsMockFalse as any);
+          .resolves(queryTeamsMockFalseCorrect as any);
       });
     
       after(()=>{
@@ -146,3 +147,94 @@ describe('Test the failure cases for get method /matches and /matches?inProgress
       expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'No match has been found'});
     });
   });
+
+  describe('Test the sucess cases for POST method AND PATCH method /matches', () => {
+ 
+    // Exemplo do uso de stubs com tipos
+    
+      let chaiHttpResponse: Response;
+    
+      before(async () => {      
+          sinon
+          .stub(Matches, "create")
+          .resolves(matchesCreatedResponse as any);
+      });
+    
+      after(()=>{
+        (Matches.create as sinon.SinonStub).restore();
+      })
+    
+      it('When made a post request into /matches, and a match is created, respond with correct response', async () => {
+        chaiHttpResponse = await chai
+           .request(app)
+           .post('/matches')
+           .send(matchRequest)
+           .then((res) => {
+              return res;
+            });
+        expect(chaiHttpResponse.status).to.deep.equal(201)
+        expect(chaiHttpResponse.body).to.be.deep.equal(matchesCreatedResponse);
+      });
+  
+      it('When made a PATCH request into /matches/:id/finish, changes the status of inProgress to false', async () => {
+
+        (Matches.create as sinon.SinonStub).restore();
+        sinon
+        .stub(Matches, "update")
+        .resolves(matchPatchById as any);
+
+        chaiHttpResponse = await chai
+           .request(app)
+           .patch('/matches/1/finish')
+
+        expect(chaiHttpResponse.status).to.deep.equal(200)
+        expect(chaiHttpResponse.body).to.be.deep.equal(matchPatchById); 
+
+        (Matches.update as sinon.SinonStub).restore();
+      });
+
+      it('When made a POST request into /matches, and a match is not created, respond with correct response', async () => {
+        chaiHttpResponse = await chai
+           .request(app)
+           .post('/matches')
+           .send(matchRequestSameTeam)
+           .then((res) => {
+              return res;
+            });
+        expect(chaiHttpResponse.status).to.deep.equal(401)
+        expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'It is not possible to create a match with two equal teams'});
+      });
+      
+      it('When made a POST request into /matches, and one of the teams is null, respond with correct response', async () => {
+        chaiHttpResponse = await chai
+           .request(app)
+           .post('/matches')
+           .send(matchRequestInvalidTeam)
+           .then((res) => {
+              return res;
+            });
+        expect(chaiHttpResponse.status).to.deep.equal(404)
+        expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'There is no team with such id!'});
+      });
+      
+      it('When made a PATCH request into /matches/:id, update the number of goals made in the game', async () => {
+        sinon
+        .stub(Matches, "update")
+        .resolves(matchUpdateResponseCorrect as any);
+
+        sinon
+        .stub(Matches, "create")
+        .resolves(matchesCreatedResponse as any);
+
+        chaiHttpResponse = await chai
+           .request(app)
+           .patch('/matches/48')
+           .send(matchUpdateRequest);
+
+        expect(chaiHttpResponse.status).to.deep.equal(200)
+        expect(chaiHttpResponse.body).to.be.deep.equal(matchUpdateResponseCorrect);
+
+        (Matches.update as sinon.SinonStub).restore();
+      });
+
+    });

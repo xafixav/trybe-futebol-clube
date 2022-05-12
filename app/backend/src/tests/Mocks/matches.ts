@@ -162,4 +162,67 @@ export const allTeamsMockCorrect = [
             "teamName": "Avaí/Kindermann"
           }
         },  
-      ]
+      ];
+
+    export const matchRequest = {
+      "homeTeam": 16, 
+      "awayTeam": 8,
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2,
+      "inProgress": true
+    }
+
+    export const matchRequestInvalidTeam = {
+      "homeTeam": 16, 
+      "awayTeam": 199999,
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2,
+      "inProgress": true
+    }
+
+    export const matchRequestSameTeam = {
+      "homeTeam": 16, 
+      "awayTeam": 16,
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2,
+      "inProgress": true
+    }
+
+    export const matchesCreatedResponse = {
+      "id": 1,
+      "homeTeam": 16,
+      "homeTeamGoals": 2,
+      "awayTeam": 8,
+      "awayTeamGoals": 2,
+      "inProgress": true,
+    }
+
+    export const matchFinishedResponse = {
+      "id": 1,
+      "homeTeam": 16,
+      "homeTeamGoals": 2,
+      "awayTeam": 8,
+      "awayTeamGoals": 2,
+      "inProgress": false,
+    }
+
+    export const matchUpdateGoals = {
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2
+    }
+
+    export const matchPatchById = [0]
+
+    export const matchUpdateRequest = {
+      "homeTeamGoals": 2,
+      "awayTeamGoals": 2
+    }
+
+    export const matchUpdateResponseCorrect = {
+      "id": 48,
+      "homeTeam": 13,
+      "homeTeamGoals": 2,
+      "awayTeam": 2,
+      "awayTeamGoals": 2,
+      "inProgress": false
+    }

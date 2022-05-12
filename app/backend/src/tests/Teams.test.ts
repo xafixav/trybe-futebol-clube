@@ -98,8 +98,8 @@ describe('Test the failure cases for get method /teams and /teams:id', () => {
          .then((res) => {
             return res;
           });
-      expect(chaiHttpResponse.status).to.deep.equal(400)
-      expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'Team not found'});
+      expect(chaiHttpResponse.status).to.deep.equal(404)
+      expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'There is no team with such id!'});
     });
 
     it('When made a get request into /teams, and no team is found, respond with correct error response', async () => {
