@@ -11,7 +11,25 @@ export default class LeaderboardController {
 
   public generateLeaderboard = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const leaderBoard = await this.LeaderBoard.createLeaderboard();
+      const leaderBoard = await this.LeaderBoard.createLeaderboard('all');
+      return res.status(StatusCodes.OK).json(leaderBoard);
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  public generateLeaderboardAway = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const leaderBoard = await this.LeaderBoard.createLeaderboard('away');
+      return res.status(StatusCodes.OK).json(leaderBoard);
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  public generateLeaderboardHome = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const leaderBoard = await this.LeaderBoard.createLeaderboard('home');
       return res.status(StatusCodes.OK).json(leaderBoard);
     } catch (e) {
       next(e);
