@@ -8,7 +8,13 @@ const router = express.Router();
 router
   .route('/leaderboard/home')
   .get(
-    leaderBoard.generateLeaderboard,
+    leaderBoard.generateLeaderboardHome,
+  );
+
+router
+  .route('/leaderboard/away')
+  .get(
+    leaderBoard.generateLeaderboardAway,
   );
 
 router
