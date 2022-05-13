@@ -74,11 +74,44 @@ export default class MatchesService {
     return MatchEnded;
   };
 
-  public findTeamMatchesById = async (id: number) => {
+  public findTeamMatchesById = async (id: number, option: string) => {
+    if (option === 'home') {
+      return this.findHomeMatches(id);
+    }
+    if (option === 'away') {
+      return this.findAwayMatches(id);
+    }
+    return this.findAllById(id);
+  };
+
+  private findHomeMatches = async (id: number) => {
+    const matchesFromThisTeam = await Matches.findAll({
+      where: {
+        in_progress: false,
+        home_team: id,
+      },
+    });
+    console.log('im in here');
+
+    return matchesFromThisTeam;
+  };
+
+  private findAllById = async (id: number) => {
     const matchesFromThisTeam = await Matches.findAll({
       where: {
         in_progress: false,
         [Op.or]: [{ home_team: id }, { away_team: id }],
+      },
+    });
+
+    return matchesFromThisTeam;
+  };
+
+  private findAwayMatches = async (id: number) => {
+    const matchesFromThisTeam = await Matches.findAll({
+      where: {
+        in_progress: false,
+        away_team: id,
       },
     });
 
