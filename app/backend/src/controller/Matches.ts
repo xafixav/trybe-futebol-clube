@@ -64,7 +64,7 @@ export default class MatchesController {
   public findTeamMatches = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const matchEnded = await this.MatchesService.findTeamMatchesById(+id);
+      const matchEnded = await this.MatchesService.findTeamMatchesById(+id, 'all');
       return res.status(StatusCodes.OK).json(matchEnded);
     } catch (e) {
       next(e);
