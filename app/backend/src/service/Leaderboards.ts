@@ -16,19 +16,19 @@ export default class LeaderboardService {
     this.MatchService = new MatchesServ();
   }
 
-  public createLeaderboard = async () => this.mountTeamsPoints();
+  public createLeaderboard = async (option: string) => this.mountTeamsPoints(option);
 
-  private mountTeamsPoints = async () => {
+  private mountTeamsPoints = async (option: string) => {
     const allTeams = await this.TeamService.findAll();
-    const teamsScore = allTeams.map((team: ITeam) => this.mountTeamScore(team));
+    const teamsScore = allTeams.map((team: ITeam) => this.mountTeamScore(team, option));
     const response: ILeaderboard[] = await Promise.all(teamsScore);
     const sorted = response.sort(this.sortTable);
     return sorted;
   };
 
-  private mountTeamScore = async (team: ITeam) => {
+  private mountTeamScore = async (team: ITeam, option: string) => {
     const { id, teamName } = team;
-    const allMatchesFromThisTeam = await this.MatchService.findTeamMatchesById(+id);
+    const allMatchesFromThisTeam = await this.MatchService.findTeamMatchesById(+id, option);
     const teamGoalsObj = this.countTeamGoals(allMatchesFromThisTeam, team);
     const teamPointsObj = this.countTeamPoints(allMatchesFromThisTeam, team);
     const result = {
