@@ -5,9 +5,11 @@ This is a project designed for a soccer website, it is a full dockerized app.
 
 <details>
 <summary><strong>Stacks used</strong></summary>
+  
 ```
   TypeScript, MYSQL, MOCHA, CHAI, EXPRESS, JSONWEBTOKEN, SINON, BCRYPT, JOI, SEQUELIZE, HTTP-STATUS-CODES
 ```
+  
 </details>
 
 
